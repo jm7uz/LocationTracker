@@ -18,4 +18,9 @@
     <ProjectReference Include="..\LocationTracker.Domain\LocationTracker.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="IRepositories\Locations\" />
+    <Folder Include="Repositories\Locations\" />
+  </ItemGroup>
+
 </Project>

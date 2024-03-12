@@ -12,11 +12,11 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Extentions\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LocationTracker.Data\LocationTracker.Data.csproj" />
     <ProjectReference Include="..\LocationTracker.Service\LocationTracker.Service.csproj" />
   </ItemGroup>
 
