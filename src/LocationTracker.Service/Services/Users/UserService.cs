@@ -1,49 +1,158 @@
 ﻿using LocationTracker.Service.DTOs.Users;
 using LocationTracker.Service.Configurations;
 using LocationTracker.Service.Interfaces.Users;
+using AutoMapper;
+using LocationTracker.Data.IRepositories.Locations;
+using LocationTracker.Data.Repositories.Users;
+using LocationTracker.Data.Repositories.Locations;
+using LocationTracker.Domain.Entities.Locations;
+using LocationTracker.Service.DTOs.Locations.AttachedAreas;
+using LocationTracker.Service.Exceptions;
+using Microsoft.EntityFrameworkCore;
+using LocationTracker.Domain.Entities.Users;
 
 namespace LocationTracker.Service.Services.Users
 {
     public class UserService : IUserService
     {
-        public Task<UserForResultDto> CreateAsync(UserForCreationDto dto)
+        private readonly IMapper _mapper;
+        private readonly UserRepository _userRepository;
+
+        public UserService(IMapper mapper, UserRepository userRepository)
         {
-            throw new NotImplementedException();
+            _mapper = mapper;
+            _userRepository = userRepository;
         }
 
-        public Task<UserForResultDto> ModifyAsync(long id, UserForUpdateDto dto)
+        public async Task<UserForResultDto> CreateAsync(UserForCreationDto dto)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.SelectAll()
+                .Where(u => u.PhoneNumber == dto.PhoneNumber)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            if (user is not null)
+                throw new LocationTrackerException(409, "User Area is already exist.");
+
+            var mappedUser = _mapper.Map<User>(dto);
+            mappedUser.CreatedAt = DateTime.UtcNow;
+
+            var createdUser = await _userRepository.InsertAsync(mappedUser);
+
+            return _mapper.Map<UserForResultDto>(createdUser);
         }
 
-        public Task<UserForResultDto> ModifyAttachAreaAsync(long id, UserAttachAreaModifyDto dto)
+        public async Task<UserForResultDto> ModifyAsync(long id, UserForUpdateDto dto)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.SelectAll()
+                .Where(u => u.PhoneNumber == dto.PhoneNumber)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            if (user is null)
+                throw new LocationTrackerException(409, "User not found.");
+
+            var mappedUser = _mapper.Map<User>(dto);
+            mappedUser.UpdatedAt = DateTime.UtcNow;
+
+            var updateUser = await _userRepository.UpdateAsync(mappedUser);
+
+            return _mapper.Map<UserForResultDto>(updateUser);
+
         }
 
-        public Task<UserForResultDto> ModifyPhoneNumberAsync(long id, UserPhoneNumberModifyDto dto)
+        public async Task<UserForResultDto> ModifyAttachAreaAsync(long id, int attachAreaId)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.SelectAll()
+                .Where(u => u.Id == id)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            if (user is null)
+                throw new LocationTrackerException(409, "User not found.");
+
+            user.AttachedAreaId = attachAreaId;
+            user.UpdatedAt = DateTime.UtcNow;
+
+            var updateUser = await _userRepository.UpdateAsync(user);
+
+            return _mapper.Map<UserForResultDto>(updateUser);
         }
 
-        public Task<UserForResultDto> ModifyRoleAsync(long id, UserRoleModifyDto dto)
+        public async Task<UserForResultDto> ModifyPhoneNumberAsync(long id, string phoneNumber)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.SelectAll()
+                .Where(u => u.Id == id)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            if (user is null)
+                throw new LocationTrackerException(409, "User not found.");
+
+            user.PhoneNumber = phoneNumber;
+            user.UpdatedAt = DateTime.UtcNow;
+
+            var updateUser = await _userRepository.UpdateAsync(user);
+
+            return _mapper.Map<UserForResultDto>(updateUser);
         }
 
-        public Task<bool> RemoveAsync(long id)
+        public async Task<UserForResultDto> ModifyRoleAsync(long id, short roleId)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.SelectAll()
+                .Where(u => u.Id == id)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            if (user is null)
+                throw new LocationTrackerException(409, "User not found.");
+
+            user.RoleId = roleId;
+            user.UpdatedAt = DateTime.UtcNow;
+
+            var updateUser = await _userRepository.UpdateAsync(user);
+
+            return _mapper.Map<UserForResultDto>(updateUser);
         }
 
-        public Task<IEnumerable<UserForResultDto>> RetrieveAllAsync(PaginationParams @params)
+        public async Task<bool> RemoveAsync(long id)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.SelectAll()
+                .Where(u => u.Id == id)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            if (user is null)
+                throw new LocationTrackerException(409, "User not found.");
+
+            var isDeleted = await _userRepository.DeleteAsync(id);
+            return isDeleted;
         }
 
-        public Task<UserForResultDto> RetrieveByIdAsync(long id)
+        public async Task<IEnumerable<UserForResultDto>> RetrieveAllAsync(PaginationParams @params)
         {
-            throw new NotImplementedException();
+            var users = await _userRepository.SelectAll()
+               .Where(u => u.Id > 0)
+               .AsNoTracking()
+               .FirstOrDefaultAsync();
+
+            if (users is null)
+                throw new LocationTrackerException(409, "User empty");
+
+            return _mapper.Map<IEnumerable<UserForResultDto>>(users);
+        }
+
+        public async Task<UserForResultDto> RetrieveByIdAsync(long id)
+        {
+            var user = await _userRepository.SelectAll()
+                .Where(u => u.Id == id)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            if (user is null)
+                throw new LocationTrackerException(409, "User not found.");
+
+            return _mapper.Map<UserForResultDto>(user);
         }
     }
 }

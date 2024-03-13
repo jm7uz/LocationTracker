@@ -10,8 +10,8 @@ public interface IUserService
     Task<UserForResultDto> CreateAsync(UserForCreationDto dto);
     Task<UserForResultDto> ModifyAsync(long id, UserForUpdateDto dto);
     Task<IEnumerable<UserForResultDto>> RetrieveAllAsync(PaginationParams @params);
-    Task<UserForResultDto> ModifyPhoneNumberAsync(long id, UserPhoneNumberModifyDto dto);
-    Task<UserForResultDto> ModifyAttachAreaAsync(long id, UserAttachAreaModifyDto dto);
-    Task<UserForResultDto> ModifyRoleAsync(long id, UserRoleModifyDto dto);
+    Task<UserForResultDto> ModifyPhoneNumberAsync(long id, string phoneNumber);
+    Task<UserForResultDto> ModifyAttachAreaAsync(long id, int AttachAreaModifyId);
+    Task<UserForResultDto> ModifyRoleAsync(long id, short roleId);
 
 }
