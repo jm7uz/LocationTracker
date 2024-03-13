@@ -1,4 +1,9 @@
+using LocationTracker.Api.Extentions;
+using LocationTracker.Api.Middlewares;
+using LocationTracker.Api.Models;
 using LocationTracker.Data.DbContexts;
+using LocationTracker.Service.Mappers;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +18,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+builder.Services.AddCustomService();
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+//Configure api url name
+builder.Services.AddControllers(options =>
+{
+    options.Conventions.Add(new RouteTokenTransformerConvention(
+                                        new ConfigurationApiUrlName()));
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -23,6 +39,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<ExceptionHandlerMiddleWare>();
 
 app.UseAuthorization();
 
