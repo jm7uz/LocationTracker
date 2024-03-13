@@ -29,8 +29,8 @@ public class RegionService : IRegionService
              .AsNoTracking()
              .FirstOrDefaultAsync();
 
-        if (region is null)
-            throw new LocationTrackerException(404, "Region is not found!");
+        if (region is not null)
+            throw new LocationTrackerException(409, "Region is already exist!");
 
         var mapped = _mapper.Map<Region>(dto);
 
