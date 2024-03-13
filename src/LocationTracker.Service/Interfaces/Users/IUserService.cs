@@ -5,8 +5,8 @@ namespace LocationTracker.Service.Interfaces.Users;
 
 public interface IUserService
 {
-    Task<bool> RemoveAsync(int id);
-    Task<UserForResultDto> RetrieveByIdAsync(int id);
+    Task<bool> RemoveAsync(long id);
+    Task<UserForResultDto> RetrieveByIdAsync(long id);
     Task<UserForResultDto> CreateAsync(UserForCreationDto dto);
     Task<UserForResultDto> ModifyAsync(long id, UserForUpdateDto dto);
     Task<IEnumerable<UserForResultDto>> RetrieveAllAsync(PaginationParams @params);
