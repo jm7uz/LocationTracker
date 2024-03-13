@@ -6,6 +6,8 @@ using LocationTracker.Data.Repositories.Districts;
 using LocationTracker.Data.Repositories.Locations;
 using LocationTracker.Data.Repositories.Regions;
 using LocationTracker.Data.Repositories.Users;
+using LocationTracker.Service.Interfaces.Locations;
+using LocationTracker.Service.Services.Locations;
 
 namespace LocationTracker.Api.Extentions;
 
@@ -25,6 +27,7 @@ public static class ServiceExtentions
         //Locations
         services.AddScoped<IAttachedAreaRepository, AttachedAreaRepository>();
         services.AddScoped<ILocationReportRepository, LocationReportRepository>();
+        services.AddScoped<ILocationReportService, LocationReportService>();
         services.AddScoped<IPointLocationRepository, PointLocationRepository>();
         services.AddScoped<IUserLocationRepository, UserLocationRepository>();
     }
