@@ -8,8 +8,6 @@
 
   <ItemGroup>
     <Folder Include="DTOs\Locations\" />
-    <Folder Include="Interfaces\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LocationTracker.Data\LocationTracker.Data.csproj" />
     <ProjectReference Include="..\LocationTracker.Domain\LocationTracker.Domain.csproj" />
   </ItemGroup>
 
