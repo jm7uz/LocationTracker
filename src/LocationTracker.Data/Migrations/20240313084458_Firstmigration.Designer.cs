@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LocationTracker.Data.Migrations
 {
     [DbContext(typeof(LocationTrackerDbContext))]
-    [Migration("20240312115300_twomigration")]
-    partial class twomigration
+    [Migration("20240313084458_Firstmigration")]
+    partial class Firstmigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
