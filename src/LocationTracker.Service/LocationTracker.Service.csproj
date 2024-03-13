@@ -18,8 +18,4 @@
     <ProjectReference Include="..\LocationTracker.Domain\LocationTracker.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\Users\" />
-  </ItemGroup>
-
 </Project>
