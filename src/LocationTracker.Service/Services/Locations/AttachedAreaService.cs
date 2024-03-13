@@ -6,6 +6,7 @@ using LocationTracker.Domain.Entities.Locations;
 using LocationTracker.Service.Interfaces.Locations;
 using LocationTracker.Data.IRepositories.Locations;
 using LocationTracker.Service.DTOs.Locations.AttachedAreas;
+using LocationTracker.Service.Commons.Extentions;
 
 namespace LocationTracker.Service.Services.Locations;
 
@@ -53,18 +54,33 @@ public class AttachedAreaService : IAttachedAreaService
         return _mapper.Map<AttachedAreaForResultDto>(mappedAttachedArea);
     }
 
-    public Task<bool> RemoveAsync(int id)
+    public async Task<bool> RemoveAsync(int id)
     {
-        throw new NotImplementedException();
+        var attachedArea = await _attachedAreaRepository.SelectByIdAsync(id);
+
+        if (attachedArea is not null)
+            throw new LocationTrackerException(404, "Attached Area is not found");
+
+        return await _attachedAreaRepository.DeleteAsync(id);
     }
 
-    public Task<IEnumerable<AttachedAreaForResultDto>> RetrieveAllAsync(PaginationParams @params)
+    public async Task<IEnumerable<AttachedAreaForResultDto>> RetrieveAllAsync(PaginationParams @params)
     {
-        throw new NotImplementedException();
+        var attachedAreas = await _attachedAreaRepository.SelectAll()
+            .AsNoTracking()
+            .ToPagedList<AttachedArea, int>(@params)
+            .ToListAsync();
+
+        return _mapper.Map<IEnumerable<AttachedAreaForResultDto>>(attachedAreas);
     }
 
-    public Task<AttachedAreaForResultDto> RetrieveByIdAsync(int id)
+    public async Task<AttachedAreaForResultDto> RetrieveByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        var attachedArea = await _attachedAreaRepository.SelectByIdAsync(id);
+
+        if (attachedArea is not null)
+            throw new LocationTrackerException(404, "Attached Area is not found");
+
+        return _mapper.Map<AttachedAreaForResultDto>(attachedArea);
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace LocationTracker.Service.DTOs.Districts;
 
-internal class DistrictForUpdateDto
+public class DistrictForUpdateDto
 {
     public string Name { get; set; }
+    public int RegionId { get; set; }
 }

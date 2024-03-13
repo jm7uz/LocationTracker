@@ -3,6 +3,11 @@ using LocationTracker.Domain.Entities.Locations;
 using LocationTracker.Domain.Entities.Users;
 using LocationTracker.Service.DTOs.Locations.AttachedAreas;
 using LocationTracker.Service.DTOs.Users;
+using LocationTracker.Domain.Entities.Districts;
+using LocationTracker.Domain.Entities.Regions;
+using LocationTracker.Service.DTOs.Districts;
+using LocationTracker.Service.DTOs.Regions;
+
 namespace LocationTracker.Service.Mappers;
 
 public class MappingProfile : Profile
@@ -14,14 +19,20 @@ public class MappingProfile : Profile
         CreateMap<User, UserForResultDto>().ReverseMap();
         CreateMap<User, UserForCreationDto>().ReverseMap();
         CreateMap<User, UserForUpdateDto>().ReverseMap();
-        CreateMap<User, UserRoleModifyDto>().ReverseMap();
-        CreateMap<User, UserPhoneNumberModifyDto>().ReverseMap();
-        CreateMap<User, UserAttachAreaModifyDto>().ReverseMap();
-
 
         //AttachedArea
         CreateMap<AttachedArea, AttachedAreaForCreationDto>().ReverseMap();
         CreateMap<AttachedArea, AttachedAreaForResultDto>().ReverseMap();
         CreateMap<AttachedArea, AttachedAreaForUpdateDto>().ReverseMap();
+
+        //Regions
+        CreateMap<Region, RegionForCreationDto>().ReverseMap();
+        CreateMap<Region, RegionForUpdateDto>().ReverseMap();
+        CreateMap<Region, RegionForResultDto>().ReverseMap();
+
+        //Districts
+        CreateMap<District, DistrictForCreationDto>().ReverseMap();
+        CreateMap<District, DistrictForUpdateDto>().ReverseMap();
+        CreateMap<District, DistrictForResultDto>().ReverseMap();
     }
 }
