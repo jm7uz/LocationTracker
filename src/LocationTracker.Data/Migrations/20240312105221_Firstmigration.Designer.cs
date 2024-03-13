@@ -3,6 +3,7 @@ using System;
 using LocationTracker.Data.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LocationTracker.Data.Migrations
 {
     [DbContext(typeof(LocationTrackerDbContext))]
-    partial class LocationTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240312105221_Firstmigration")]
+    partial class Firstmigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,15 +40,10 @@ namespace LocationTracker.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("RegionId")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("RegionId");
 
                     b.ToTable("Districts");
                 });
@@ -213,7 +211,7 @@ namespace LocationTracker.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("AttachedAreaId")
+                    b.Property<int>("AttachedArea")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
@@ -222,15 +220,7 @@ namespace LocationTracker.Data.Migrations
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("MiddleName")
+                    b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -257,20 +247,7 @@ namespace LocationTracker.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AttachedAreaId");
-
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("LocationTracker.Domain.Entities.Districts.District", b =>
-                {
-                    b.HasOne("LocationTracker.Domain.Entities.Regions.Region", "Region")
-                        .WithMany()
-                        .HasForeignKey("RegionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Region");
                 });
 
             modelBuilder.Entity("LocationTracker.Domain.Entities.Locations.AttachedArea", b =>
@@ -293,17 +270,6 @@ namespace LocationTracker.Data.Migrations
                 });
 
             modelBuilder.Entity("LocationTracker.Domain.Entities.Locations.PointLocation", b =>
-                {
-                    b.HasOne("LocationTracker.Domain.Entities.Locations.AttachedArea", "AttachedArea")
-                        .WithMany()
-                        .HasForeignKey("AttachedAreaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AttachedArea");
-                });
-
-            modelBuilder.Entity("LocationTracker.Domain.Entities.Users.User", b =>
                 {
                     b.HasOne("LocationTracker.Domain.Entities.Locations.AttachedArea", "AttachedArea")
                         .WithMany()
