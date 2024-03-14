@@ -39,5 +39,6 @@ public static class ServiceExtentions
         services.AddScoped<IPointLocationRepository, PointLocationRepository>();
         services.AddScoped<IUserLocationRepository, UserLocationRepository>();
         services.AddScoped<IAttachedAreaService, AttachedAreaService>();
+        services.AddScoped<ILocationCheckerService, LocationCheckerService>();
     }
 }
