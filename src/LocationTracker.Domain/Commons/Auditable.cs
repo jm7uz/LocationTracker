@@ -1,8 +1,8 @@
 ﻿namespace LocationTracker.Domain.Commons;
 
-public class Auditable
+public class Auditable <TKey>
 {
-    public long Id { get; set; }
+    public TKey Id { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
 }
