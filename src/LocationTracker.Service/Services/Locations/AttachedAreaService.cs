@@ -43,7 +43,7 @@ public class AttachedAreaService : IAttachedAreaService
     {
         var attachedArea = await _attachedAreaRepository.SelectByIdAsync(id);
 
-        if (attachedArea is not null)
+        if (attachedArea is null)
             throw new LocationTrackerException(404, "Attached Area is not found");
 
         var mappedAttachedArea = _mapper.Map(dto, attachedArea);
@@ -58,7 +58,7 @@ public class AttachedAreaService : IAttachedAreaService
     {
         var attachedArea = await _attachedAreaRepository.SelectByIdAsync(id);
 
-        if (attachedArea is not null)
+        if (attachedArea is null)
             throw new LocationTrackerException(404, "Attached Area is not found");
 
         return await _attachedAreaRepository.DeleteAsync(id);
@@ -78,7 +78,7 @@ public class AttachedAreaService : IAttachedAreaService
     {
         var attachedArea = await _attachedAreaRepository.SelectByIdAsync(id);
 
-        if (attachedArea is not null)
+        if (attachedArea is null)
             throw new LocationTrackerException(404, "Attached Area is not found");
 
         return _mapper.Map<AttachedAreaForResultDto>(attachedArea);
