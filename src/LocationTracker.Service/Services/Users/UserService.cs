@@ -10,6 +10,7 @@ using LocationTracker.Service.DTOs.Locations.AttachedAreas;
 using LocationTracker.Service.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using LocationTracker.Domain.Entities.Users;
+using LocationTracker.Domain.Enums;
 
 namespace LocationTracker.Service.Services.Users
 {
@@ -27,7 +28,7 @@ namespace LocationTracker.Service.Services.Users
         public async Task<UserForResultDto> CreateAsync(UserForCreationDto dto)
         {
             var user = await _userRepository.SelectAll()
-                .Where(u => u.PhoneNumber == dto.PhoneNumber)
+                .Where(u => u.Id == dto.Id)
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
 
@@ -45,7 +46,7 @@ namespace LocationTracker.Service.Services.Users
         public async Task<UserForResultDto> ModifyAsync(long id, UserForUpdateDto dto)
         {
             var user = await _userRepository.SelectAll()
-                .Where(u => u.PhoneNumber == dto.PhoneNumber)
+                .Where(u => u.Id == id)
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
 
@@ -79,7 +80,7 @@ namespace LocationTracker.Service.Services.Users
             return _mapper.Map<UserForResultDto>(updateUser);
         }
 
-        public async Task<UserForResultDto> ModifyPhoneNumberAsync(long id, string phoneNumber)
+        public async Task<UserForResultDto> ModifyRoleAsync(long id, Role roleId)
         {
             var user = await _userRepository.SelectAll()
                 .Where(u => u.Id == id)
@@ -89,25 +90,7 @@ namespace LocationTracker.Service.Services.Users
             if (user is null)
                 throw new LocationTrackerException(409, "User not found.");
 
-            user.PhoneNumber = phoneNumber;
-            user.UpdatedAt = DateTime.UtcNow;
-
-            var updateUser = await _userRepository.UpdateAsync(user);
-
-            return _mapper.Map<UserForResultDto>(updateUser);
-        }
-
-        public async Task<UserForResultDto> ModifyRoleAsync(long id, short roleId)
-        {
-            var user = await _userRepository.SelectAll()
-                .Where(u => u.Id == id)
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
-
-            if (user is null)
-                throw new LocationTrackerException(409, "User not found.");
-
-            user.RoleId = roleId;
+            user.Role = roleId;
             user.UpdatedAt = DateTime.UtcNow;
 
             var updateUser = await _userRepository.UpdateAsync(user);
