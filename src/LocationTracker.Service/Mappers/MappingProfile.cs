@@ -7,6 +7,7 @@ using LocationTracker.Domain.Entities.Districts;
 using LocationTracker.Domain.Entities.Regions;
 using LocationTracker.Service.DTOs.Districts;
 using LocationTracker.Service.DTOs.Regions;
+using LocationTracker.Service.DTOs.Locations.LocationReports;
 
 namespace LocationTracker.Service.Mappers;
 
@@ -25,6 +26,10 @@ public class MappingProfile : Profile
         CreateMap<AttachedArea, AttachedAreaForResultDto>().ReverseMap();
         CreateMap<AttachedArea, AttachedAreaForUpdateDto>().ReverseMap();
 
+        // LocationReport
+        CreateMap<locationReport, LocationReportForCreationDto>().ReverseMap();
+        CreateMap<locationReport, LocationReportForUpdateDto>().ReverseMap();
+        CreateMap<locationReport, LocationReportForResultDto>().ReverseMap();
         //Regions
         CreateMap<Region, RegionForCreationDto>().ReverseMap();
         CreateMap<Region, RegionForUpdateDto>().ReverseMap();
@@ -35,4 +40,5 @@ public class MappingProfile : Profile
         CreateMap<District, DistrictForUpdateDto>().ReverseMap();
         CreateMap<District, DistrictForResultDto>().ReverseMap();
     }
+
 }
