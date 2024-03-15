@@ -1,13 +1,10 @@
-﻿using LocationTracker.Service.DTOs.Users;
-using LocationTracker.Service.Configurations;
-using LocationTracker.Service.Interfaces.Users;
-using AutoMapper;
-using LocationTracker.Data.IRepositories.Locations;
+﻿using AutoMapper;
 using LocationTracker.Data.Repositories.Users;
-using LocationTracker.Data.Repositories.Locations;
-using LocationTracker.Domain.Entities.Locations;
-using LocationTracker.Service.DTOs.Locations.AttachedAreas;
+using LocationTracker.Domain.Entities.Users;
+using LocationTracker.Service.Configurations;
+using LocationTracker.Service.DTOs.Users;
 using LocationTracker.Service.Exceptions;
+using LocationTracker.Service.Interfaces.Users;
 using Microsoft.EntityFrameworkCore;
 using LocationTracker.Domain.Entities.Users;
 using LocationTracker.Domain.Enums;
@@ -80,6 +77,17 @@ namespace LocationTracker.Service.Services.Users
             return _mapper.Map<UserForResultDto>(updateUser);
         }
 
+        public async Task<UserForResultDto> ModifyRoleAsync(long id, short roleId)
+        {
+            var user = await _userRepository.SelectAll()
+                .Where(u => u.Id == id)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            if (user is null)
+                throw new LocationTrackerException(409, "User not found.");
+
+            user.RoleId = roleId;
         public async Task<UserForResultDto> ModifyRoleAsync(long id, Role roleId)
         {
             var user = await _userRepository.SelectAll()
