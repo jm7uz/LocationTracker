@@ -1,15 +1,11 @@
-﻿using LocationTracker.Service.DTOs.Users;
-using LocationTracker.Service.Configurations;
-using LocationTracker.Service.Interfaces.Users;
-using AutoMapper;
-using LocationTracker.Data.IRepositories.Locations;
+﻿using AutoMapper;
 using LocationTracker.Data.Repositories.Users;
-using LocationTracker.Data.Repositories.Locations;
-using LocationTracker.Domain.Entities.Locations;
-using LocationTracker.Service.DTOs.Locations.AttachedAreas;
-using LocationTracker.Service.Exceptions;
-using Microsoft.EntityFrameworkCore;
 using LocationTracker.Domain.Entities.Users;
+using LocationTracker.Service.Configurations;
+using LocationTracker.Service.DTOs.Users;
+using LocationTracker.Service.Exceptions;
+using LocationTracker.Service.Interfaces.Users;
+using Microsoft.EntityFrameworkCore;
 
 namespace LocationTracker.Service.Services.Users
 {
@@ -27,7 +23,7 @@ namespace LocationTracker.Service.Services.Users
         public async Task<UserForResultDto> CreateAsync(UserForCreationDto dto)
         {
             var user = await _userRepository.SelectAll()
-                .Where(u => u.PhoneNumber == dto.PhoneNumber)
+                .Where(u => u.Id == dto.Id)
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
 
@@ -45,7 +41,7 @@ namespace LocationTracker.Service.Services.Users
         public async Task<UserForResultDto> ModifyAsync(long id, UserForUpdateDto dto)
         {
             var user = await _userRepository.SelectAll()
-                .Where(u => u.PhoneNumber == dto.PhoneNumber)
+                .Where(u => u.Id == id)
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
 
@@ -72,24 +68,6 @@ namespace LocationTracker.Service.Services.Users
                 throw new LocationTrackerException(409, "User not found.");
 
             user.AttachedAreaId = attachAreaId;
-            user.UpdatedAt = DateTime.UtcNow;
-
-            var updateUser = await _userRepository.UpdateAsync(user);
-
-            return _mapper.Map<UserForResultDto>(updateUser);
-        }
-
-        public async Task<UserForResultDto> ModifyPhoneNumberAsync(long id, string phoneNumber)
-        {
-            var user = await _userRepository.SelectAll()
-                .Where(u => u.Id == id)
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
-
-            if (user is null)
-                throw new LocationTrackerException(409, "User not found.");
-
-            user.PhoneNumber = phoneNumber;
             user.UpdatedAt = DateTime.UtcNow;
 
             var updateUser = await _userRepository.UpdateAsync(user);
