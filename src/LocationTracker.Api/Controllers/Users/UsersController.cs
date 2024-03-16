@@ -27,6 +27,7 @@ namespace LocationTracker.Api.Controllers.Users
             public async Task<IActionResult> GetAllAsync([FromQuery] PaginationParams @params)
                 => Ok(await _userService.RetrieveAllAsync(@params));
 
+            [Authorize(Roles = "Admin, SuperAdmin")]
             [HttpGet("{id}")]
             public async Task<IActionResult> GetByIdAsync([FromRoute] long id)
                 => Ok(await _userService.RetrieveByIdAsync(id));
