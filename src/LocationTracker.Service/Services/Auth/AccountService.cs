@@ -7,7 +7,7 @@ using LocationTracker.Service.Interfaces.Auths;
 using LocationTracker.Data.IRepositories.Users;
 
 
-namespace Innoplatforma.Server.Service.Services.Accounts;
+namespace LocationTracker.Service.Services.Auth;
 
 public class AccountService : IAccountService
 {
@@ -29,12 +29,12 @@ public class AccountService : IAccountService
                 .FirstOrDefaultAsync();
 
         if (user is null)
-            throw new LocationTrackerException(404, "Telefon raqam yoki parol xato kiritildi!");
+            throw new LocationTrackerException(404, "Id raqam yoki parol xato kiritildi!");
 
         var hasherResult = PasswordHelper.Verify(loginDto.Password, user.Salt, user.Password);
 
         if (hasherResult == false)
-            throw new LocationTrackerException(404, "Telefon raqam yoki parol xato kiritildi!");
+            throw new LocationTrackerException(404, "Id raqam yoki parol xato kiritildi!");
 
         return _authService.GenerateToken(user);
     }

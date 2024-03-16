@@ -14,6 +14,15 @@ using LocationTracker.Service.Interfaces.Regions;
 using LocationTracker.Service.Services.Districts;
 using LocationTracker.Service.Services.Locations;
 using LocationTracker.Service.Services.Regions;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using LocationTracker.Service.Interfaces.Users;
+using LocationTracker.Service.Services.Users;
+using LocationTracker.Service.Interfaces.Auths;
+using LocationTracker.Service.Services.Auth;
 
 namespace LocationTracker.Api.Extentions;
 
@@ -23,7 +32,10 @@ public static class ServiceExtentions
     {
         // Users
         services.AddScoped<IUserRepository, UserRepository>();
-
+        services.AddScoped<IUserService, UserService>();
+        // Auth
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IAccountService, AccountService>();
         //Regions
         services.AddScoped<IRegionRepository, RegionRepository>();
         services.AddScoped<IRegionService, RegionService>();
@@ -40,5 +52,61 @@ public static class ServiceExtentions
         services.AddScoped<IUserLocationRepository, UserLocationRepository>();
         services.AddScoped<IAttachedAreaService, AttachedAreaService>();
         services.AddScoped<ILocationCheckerService, LocationCheckerService>();
+    }
+
+    public static void AddSwaggerService(this IServiceCollection services)
+    {
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "LocationTracker.Server.Api", Version = "v1" });
+            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Description =
+                    "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey
+            });
+
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] { }
+                }
+            });
+        });
+    }
+    public static void ConfigureJwt(this IServiceCollection services, IConfiguration configuration)
+    {
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = configuration["Jwt:Issuer"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"])),
+                ValidAudience = configuration["Jwt:Audience"],
+                RequireExpirationTime = true
+            };
+        });
     }
 }

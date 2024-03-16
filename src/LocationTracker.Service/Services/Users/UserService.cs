@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LocationTracker.Data.IRepositories.Users;
 using LocationTracker.Data.Repositories.Users;
 using LocationTracker.Domain.Entities.Users;
 using LocationTracker.Domain.Enums;
@@ -13,9 +14,9 @@ namespace LocationTracker.Service.Services.Users
     public class UserService : IUserService
     {
         private readonly IMapper _mapper;
-        private readonly UserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
 
-        public UserService(IMapper mapper, UserRepository userRepository)
+        public UserService(IMapper mapper, IUserRepository userRepository)
         {
             _mapper = mapper;
             _userRepository = userRepository;
@@ -33,6 +34,8 @@ namespace LocationTracker.Service.Services.Users
 
             var mappedUser = _mapper.Map<User>(dto);
             mappedUser.CreatedAt = DateTime.UtcNow;
+            mappedUser.Salt = ".";
+            mappedUser.Role = Role.User;
 
             var createdUser = await _userRepository.InsertAsync(mappedUser);
 

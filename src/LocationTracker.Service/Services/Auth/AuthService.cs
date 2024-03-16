@@ -8,7 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Innoplatforma.Server.Service.Services.Commons;
+namespace LocationTracker.Service.Services.Auth;
 
 public class AuthService : IAuthService
 {
