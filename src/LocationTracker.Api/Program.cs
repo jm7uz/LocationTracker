@@ -22,6 +22,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCustomService();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+// JWT service
+builder.Services.AddSwaggerService();
+builder.Services.ConfigureJwt(builder.Configuration);
+
 //Configure api url name
 builder.Services.AddControllers(options =>
 {

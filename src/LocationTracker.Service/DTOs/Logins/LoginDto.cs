@@ -5,8 +5,8 @@ namespace LocationTracker.Service.DTOs.Logins;
 
 public class LoginDto
 {
-    [Required(ErrorMessage = "Telefon raqamni kiriting"), PhoneNumber]
-    public string PhoneNumber { get; set; }
+    [Required(ErrorMessage = "id raqamni kiriting")]
+    public long Id { get; set; }
 
     [Required(ErrorMessage = "Parolni kiriting"), StrongPassword]
     public string Password { get; set; }
