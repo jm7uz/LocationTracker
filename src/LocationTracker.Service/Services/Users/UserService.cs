@@ -3,6 +3,7 @@ using LocationTracker.Data.IRepositories.Users;
 using LocationTracker.Data.Repositories.Users;
 using LocationTracker.Domain.Entities.Users;
 using LocationTracker.Domain.Enums;
+using LocationTracker.Service.Commons.Helpers;
 using LocationTracker.Service.Configurations;
 using LocationTracker.Service.DTOs.Users;
 using LocationTracker.Service.Exceptions;
@@ -32,10 +33,10 @@ namespace LocationTracker.Service.Services.Users
             if (user is not null)
                 throw new LocationTrackerException(409, "User Area is already exist.");
 
+            var hasherResult = PasswordHelper.Hash(dto.Password);
             var mappedUser = _mapper.Map<User>(dto);
-            mappedUser.CreatedAt = DateTime.UtcNow;
-            mappedUser.Salt = ".";
-            mappedUser.Role = Role.User;
+            mappedUser.Salt = hasherResult.Salt.ToString();
+            mappedUser.Password = hasherResult.Hash;
 
             var createdUser = await _userRepository.InsertAsync(mappedUser);
 

@@ -23,8 +23,7 @@ public class AccountService : IAccountService
     public async Task<TokenModel> LoginAsync(LoginDto loginDto)
     {
         var user = await _userRepository.SelectAll()
-                .Where(a => a.Password == loginDto.Password)
-                .Include(a => a.Role)
+                .Where(a => a.Id == loginDto.Id)
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
 
