@@ -19,7 +19,7 @@ public class MappingProfile : Profile
         //User
         CreateMap<User, UserForResultDto>().ReverseMap();
         CreateMap<User, UserForCreationDto>().ReverseMap();
-        CreateMap<User, UserForUpdateDto>();
+        CreateMap<User, UserForUpdateDto>().ReverseMap();
 
         //AttachedArea
         CreateMap<AttachedArea, AttachedAreaForCreationDto>().ReverseMap();

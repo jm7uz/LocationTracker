@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
 using LocationTracker.Data.IRepositories.Users;
 using LocationTracker.Data.Repositories.Users;
+using LocationTracker.Domain.Entities.Regions;
 using LocationTracker.Domain.Entities.Users;
 using LocationTracker.Domain.Enums;
+using LocationTracker.Service.Commons.Extentions;
 using LocationTracker.Service.Commons.Helpers;
 using LocationTracker.Service.Configurations;
+using LocationTracker.Service.DTOs.Regions;
 using LocationTracker.Service.DTOs.Users;
 using LocationTracker.Service.Exceptions;
 using LocationTracker.Service.Interfaces.Users;
@@ -114,15 +117,14 @@ namespace LocationTracker.Service.Services.Users
 
             public async Task<IEnumerable<UserForResultDto>> RetrieveAllAsync(PaginationParams @params)
             {
-                var users = await _userRepository.SelectAll()
-                   .Where(u => u.Id > 0)
-                   .AsNoTracking()
-                   .FirstOrDefaultAsync();
+                    var users = await _userRepository
+                    .SelectAll()
+                    .AsNoTracking()
+                    .ToPagedList<User, long>(@params)
+                    .ToListAsync();
 
-                if (users is null)
-                    throw new LocationTrackerException(409, "User empty");
 
-                return _mapper.Map<IEnumerable<UserForResultDto>>(users);
+            return _mapper.Map<IEnumerable<UserForResultDto>>(users);
             }
 
             public async Task<UserForResultDto> RetrieveByIdAsync(long id)
