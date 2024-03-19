@@ -12,4 +12,5 @@ public class UserForResultDto
     public string Address { get; set; }
     public int AttachedArea { get; set; }
     public short RoleId { get; set; }
+    public string Password { get; set; }
 }
