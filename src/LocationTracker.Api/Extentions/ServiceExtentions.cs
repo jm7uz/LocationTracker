@@ -45,9 +45,10 @@ public static class ServiceExtentions
         //Locations
         services.AddScoped<IAttachedAreaRepository, AttachedAreaRepository>();
         services.AddScoped<ILocationReportRepository, LocationReportRepository>();
-        services.AddScoped<ILocationReportService, LocationReportService>();
         services.AddScoped<IPointLocationRepository, PointLocationRepository>();
+        services.AddScoped<IPointLocationService, PointLocationService>();
         services.AddScoped<IAttachedAreaService, AttachedAreaService>();
+        services.AddScoped<ILocationReportService, LocationReportService>();
         services.AddScoped<ILocationCheckerService, LocationCheckerService>();
         services.AddScoped<IUserLocationRepository, UserLocationRepository>();
         services.AddScoped<IUserLocationService, UserLocationService>();
