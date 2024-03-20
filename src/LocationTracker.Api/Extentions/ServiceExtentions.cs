@@ -9,10 +9,8 @@ using LocationTracker.Data.Repositories.Users;
 using LocationTracker.Service.Interfaces.Locations;
 using LocationTracker.Service.Services.Locations;
 using LocationTracker.Service.Interfaces.Districts;
-using LocationTracker.Service.Interfaces.Locations;
 using LocationTracker.Service.Interfaces.Regions;
 using LocationTracker.Service.Services.Districts;
-using LocationTracker.Service.Services.Locations;
 using LocationTracker.Service.Services.Regions;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -49,9 +47,10 @@ public static class ServiceExtentions
         services.AddScoped<ILocationReportRepository, LocationReportRepository>();
         services.AddScoped<ILocationReportService, LocationReportService>();
         services.AddScoped<IPointLocationRepository, PointLocationRepository>();
-        services.AddScoped<IUserLocationRepository, UserLocationRepository>();
         services.AddScoped<IAttachedAreaService, AttachedAreaService>();
         services.AddScoped<ILocationCheckerService, LocationCheckerService>();
+        services.AddScoped<IUserLocationRepository, UserLocationRepository>();
+        services.AddScoped<IUserLocationService, UserLocationService>();
     }
 
     public static void AddSwaggerService(this IServiceCollection services)

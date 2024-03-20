@@ -8,5 +8,5 @@ public class UserLocation : Auditable<long>
     public double Latitude { get; set; }
     public double Longitude { get; set; }
     //Is Verifed 1 soat ichidagi statusga % chiqarish uchun belgilandi. Foydalanuvchi hisobotga qo'shishdan oldin harakatlarini tahlil qilish uchun.
-    public bool IsVerified { get; set; }
+    public bool IsVerified { get; set; } = false;
 }
