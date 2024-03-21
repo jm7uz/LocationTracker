@@ -2,10 +2,12 @@
 using LocationTracker.Service.Configurations;
 using LocationTracker.Service.DTOs.Regions;
 using LocationTracker.Service.Interfaces.Regions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LocationTracker.Api.Controllers.Regions;
 
+[Authorize(Roles = "Admin, SuperAdmin")]
 public class RegionsController : BaseController
 {
     private readonly IRegionService _service;

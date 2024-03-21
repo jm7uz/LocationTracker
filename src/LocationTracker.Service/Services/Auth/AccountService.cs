@@ -1,39 +1,36 @@
-﻿using Microsoft.EntityFrameworkCore;
-using LocationTracker.Service.Exceptions;
-using LocationTracker.Service.DTOs.Logins;
-using LocationTracker.Service.Commons.Models;
+﻿using LocationTracker.Data.IRepositories.Users;
 using LocationTracker.Service.Commons.Helpers;
+using LocationTracker.Service.Commons.Models;
+using LocationTracker.Service.DTOs.Logins;
+using LocationTracker.Service.Exceptions;
 using LocationTracker.Service.Interfaces.Auths;
-using LocationTracker.Data.IRepositories.Users;
-
-
-namespace LocationTracker.Service.Services.Auth;
+using Microsoft.EntityFrameworkCore;
 
 public class AccountService : IAccountService
 {
     private readonly IAuthService _authService;
     private readonly IUserRepository _userRepository;
-    public AccountService(
-        IAuthService authService,
-        IUserRepository userRepository)
+
+    public AccountService(IAuthService authService, IUserRepository userRepository)
     {
         _authService = authService;
         _userRepository = userRepository;
     }
+
     public async Task<TokenModel> LoginAsync(LoginDto loginDto)
     {
         var user = await _userRepository.SelectAll()
-                .Where(a => a.Id == loginDto.Id)
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
+            .Where(a => a.Id == loginDto.Id)
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
 
         if (user is null)
-            throw new LocationTrackerException(404, "Id raqam yoki parol xato kiritildi!");
+            throw new LocationTrackerException(404, "User not found");
 
-        var hasherResult = PasswordHelper.Verify(loginDto.Password, user.Salt, user.Password);
+        var isPasswordCorrect = PasswordHelper.Verify(loginDto.Password, user.Salt, user.Password);
 
-        if (hasherResult == false)
-            throw new LocationTrackerException(404, "Id raqam yoki parol xato kiritildi!");
+        if (!isPasswordCorrect)
+            throw new LocationTrackerException(404, "Incorrect password");
 
         return _authService.GenerateToken(user);
     }

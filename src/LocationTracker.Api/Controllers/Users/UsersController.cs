@@ -1,11 +1,10 @@
-﻿using LocationTracker.Api.Controllers.Common;
-using LocationTracker.Domain.Enums;
-using LocationTracker.Service.Configurations;
-using LocationTracker.Service.DTOs.Users;
-using LocationTracker.Service.Interfaces.Users;
+﻿using LocationTracker.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
+using LocationTracker.Service.DTOs.Users;
+using LocationTracker.Api.Controllers.Common;
+using LocationTracker.Service.Configurations;
+using LocationTracker.Service.Interfaces.Users;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.RateLimiting;
 
 namespace LocationTracker.Api.Controllers.Users
 {
@@ -17,7 +16,7 @@ namespace LocationTracker.Api.Controllers.Users
             _userService = userService;
         }
 
-        //[Authorize(Roles = "Admin, SuperAdmin")]
+       // [Authorize(Roles = "Admin, SuperAdmin")]
         [HttpPost]
         public async Task<IActionResult> InsertAsync([FromForm] UserForCreationDto dto)
                     => Ok(await _userService.CreateAsync(dto));
@@ -27,7 +26,6 @@ namespace LocationTracker.Api.Controllers.Users
         public async Task<IActionResult> GetAllAsync([FromQuery] PaginationParams @params)
             => Ok(await _userService.RetrieveAllAsync(@params));
 
-        [Authorize(Roles = "Admin, SuperAdmin")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsync([FromRoute] long id)
             => Ok(await _userService.RetrieveByIdAsync(id));
@@ -38,7 +36,7 @@ namespace LocationTracker.Api.Controllers.Users
             => Ok(await _userService.RemoveAsync(id));
 
         [Authorize(Roles = "Admin, SuperAdmin")]
-        [HttpPut("{id}")]
+        [HttpPut("{id}/modifyrole")]
         public async Task<IActionResult> UpdateAsync([FromRoute] long id, [FromForm] UserForUpdateDto dto)
             => Ok(await _userService.ModifyAsync(id, dto));
 
@@ -46,5 +44,10 @@ namespace LocationTracker.Api.Controllers.Users
         [HttpPatch()]
         public async Task<IActionResult> ModifyStatus(long id, Role roleId)
             => Ok(await _userService.ModifyRoleAsync(id, roleId));
+
+        [Authorize(Roles = "Admin, SuperAdmin")]
+        [HttpPut("{id}/changepassword")]
+        public async Task<IActionResult> ChangePassword([FromRoute] long id, [FromForm] UserForChangePasswordDto dto)
+            => Ok(await _userService.ChangePasswordAsync(id, dto));
     }
 }
