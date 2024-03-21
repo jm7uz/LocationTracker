@@ -46,5 +46,9 @@ namespace LocationTracker.Api.Controllers.Users
         [HttpPatch()]
         public async Task<IActionResult> ModifyStatus(long id, Role roleId)
             => Ok(await _userService.ModifyRoleAsync(id, roleId));
+
+        [HttpGet("users")]
+        public async Task<IActionResult> SearchUser(string smthing)
+            => Ok(await _userService.SearchForUser(smthing));
     }
 }
