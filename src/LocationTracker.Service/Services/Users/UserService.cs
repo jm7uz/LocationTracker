@@ -9,6 +9,7 @@ using LocationTracker.Service.Commons.Helpers;
 using LocationTracker.Data.IRepositories.Users;
 using LocationTracker.Service.Interfaces.Users;
 using LocationTracker.Service.Commons.Extentions;
+using Microsoft.AspNetCore.Http;
 
 namespace LocationTracker.Service.Services.Users
 {
@@ -158,6 +159,41 @@ namespace LocationTracker.Service.Services.Users
                 throw new LocationTrackerException(409, "User not found.");
 
             return _mapper.Map<UserForResultDto>(user);
+        }
+        private async Task<string> SaveFileAsync(IFormFile file)
+        {
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            var uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+
+            return filePath;
+        }
+
+        public async Task<bool> UploadPhotoAsync(long id, IFormFile photoPath)
+        {
+            if (photoPath == null || photoPath.Length == 0)
+                throw new LocationTrackerException(400, "File is not selected or empty");
+
+            var user = await _userRepository.SelectAll()
+                .Where(u => u.Id == id)
+                .FirstOrDefaultAsync();
+
+            if (user is null)
+                throw new LocationTrackerException(400, "User not found");
+
+            var imagePath = await SaveFileAsync(photoPath);
+            user.ProfileImagePath = imagePath;
+
+            await _userRepository.UpdateAsync(user);
+            return true;
         }
     }
 }

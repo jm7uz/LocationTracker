@@ -49,5 +49,11 @@ namespace LocationTracker.Api.Controllers.Users
         [HttpPut("{id}/changepassword")]
         public async Task<IActionResult> ChangePassword([FromRoute] long id, [FromForm] UserForChangePasswordDto dto)
             => Ok(await _userService.ChangePasswordAsync(id, dto));
+
+        [HttpPost("{id}/upload-picture")]
+        public async Task<IActionResult> UploadPictureAsync(long id, IFormFile file)
+            => Ok(await _userService.UploadPhotoAsync(id, file));
+
+        
     }
 }

@@ -1,6 +1,7 @@
 ﻿using LocationTracker.Service.DTOs.Users;
 using LocationTracker.Service.Configurations;
 using LocationTracker.Domain.Enums;
+using Microsoft.AspNetCore.Http;
 
 namespace LocationTracker.Service.Interfaces.Users;
 
@@ -14,5 +15,6 @@ public interface IUserService
     Task<UserForResultDto> ModifyAttachAreaAsync(long id, int AttachAreaModifyId);
     Task<UserForResultDto> ModifyRoleAsync(long id, Role role);
     Task<bool> ChangePasswordAsync(long id, UserForChangePasswordDto password);
+    Task<bool> UploadPhotoAsync(long id, IFormFile photoPath);
 
 }
