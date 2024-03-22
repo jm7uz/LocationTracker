@@ -36,12 +36,12 @@ namespace LocationTracker.Api.Controllers.Users
             => Ok(await _userService.RemoveAsync(id));
 
         [Authorize(Roles = "Admin, SuperAdmin")]
-        [HttpPut("{id}/modifyrole")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAsync([FromRoute] long id, [FromForm] UserForUpdateDto dto)
             => Ok(await _userService.ModifyAsync(id, dto));
 
         [Authorize(Roles = "SuperAdmin")]
-        [HttpPatch()]
+        [HttpPatch("{id}/modifyrole")]
         public async Task<IActionResult> ModifyStatus(long id, Role roleId)
             => Ok(await _userService.ModifyRoleAsync(id, roleId));
 

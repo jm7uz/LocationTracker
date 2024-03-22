@@ -14,8 +14,7 @@ public class UserForCreationDto
 
     [StrongPassword]
     public string? Password { get; set; }
-    public string? ProfileImagePath { get; set; }
     public DateTime? DateOfBirth { get; set; }
     public string? Address { get; set; }
-    public int? AttachedArea { get; set; }
+    public int? AttachedAreaId { get; set; }
 }
