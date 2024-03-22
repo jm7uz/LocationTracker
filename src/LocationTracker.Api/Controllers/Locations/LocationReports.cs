@@ -2,10 +2,11 @@
 using LocationTracker.Service.Configurations;
 using LocationTracker.Service.DTOs.Locations.LocationReports;
 using LocationTracker.Service.Interfaces.Locations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LocationTracker.Api.Controllers.Locations;
-
+[Authorize(Roles = "Admin, SuperAdmin")]
 public class LocationReports : BaseController
 {
     private readonly ILocationReportService _locationReportService;

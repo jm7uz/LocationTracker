@@ -2,10 +2,11 @@
 using LocationTracker.Service.Configurations;
 using LocationTracker.Service.DTOs.Districts;
 using LocationTracker.Service.Interfaces.Districts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LocationTracker.Api.Controllers.Districts;
-
+[Authorize(Roles = "Admin, SuperAdmin")]
 public class DistrictsController : BaseController
 {
     private readonly IDistrictService _service;
