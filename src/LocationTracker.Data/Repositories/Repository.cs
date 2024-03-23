@@ -41,10 +41,21 @@ public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntit
 
     public async Task<TEntity> UpdateAsync(TEntity entity)
     {
-        var entry = _dbContext.Update(entity);
-        await _dbContext.SaveChangesAsync();
+        try
+        {
+            var entry = _dbContext.Update(entity);
+            await _dbContext.SaveChangesAsync();
+            return entry.Entity;
 
-        return entry.Entity;
+        }
+        catch (Exception ex)
+        {
+            await Console.Out.WriteLineAsync(ex.Message);
+
+        }
+        throw new NotImplementedException();
+
+
     }
 
     public async Task SaveAsync()

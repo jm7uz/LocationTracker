@@ -10,6 +10,7 @@ using LocationTracker.Data.IRepositories.Users;
 using LocationTracker.Service.Interfaces.Users;
 using LocationTracker.Service.Commons.Extentions;
 using Microsoft.AspNetCore.Http;
+using LocationTracker.Data.IRepositories.Locations;
 
 namespace LocationTracker.Service.Services.Users
 {
@@ -17,11 +18,13 @@ namespace LocationTracker.Service.Services.Users
     {
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
+        private readonly IAttachedAreaRepository _attachedAreaRepository;
 
-        public UserService(IMapper mapper, IUserRepository userRepository)
+        public UserService(IMapper mapper, IUserRepository userRepository, IAttachedAreaRepository attachedAreaRepository)
         {
             _mapper = mapper;
             _userRepository = userRepository;
+            _attachedAreaRepository = attachedAreaRepository;
         }
         public async Task<UserForResultDto> CreateAsync(UserForCreationDto dto)
         {
@@ -73,20 +76,32 @@ namespace LocationTracker.Service.Services.Users
         {
             var user = await _userRepository.SelectAll()
                 .Where(u => u.Id == id)
-                .AsNoTracking()
                 .FirstOrDefaultAsync();
 
             if (user is null)
-                throw new LocationTrackerException(409, "User not found.");
+                throw new LocationTrackerException(404, "User not found.");
 
-            var mappedUser = _mapper.Map<User>(dto);
-            mappedUser.UpdatedAt = DateTime.UtcNow;
+            // Update the user entity properties based on the DTO
+            _mapper.Map(dto, user);
 
-            var updateUser = await _userRepository.UpdateAsync(mappedUser);
+            // If the AttachedArea is specified, update it
+            if (dto.AttachedAreaId.HasValue)
+            {
+                var attachedArea = await _attachedAreaRepository.SelectByIdAsync(dto.AttachedAreaId.Value);
+                if (attachedArea is null)
+                    throw new LocationTrackerException(404, "Attached area not found.");
 
-            return _mapper.Map<UserForResultDto>(updateUser);
+                user.AttachedAreaId = attachedArea.Id;
+            }
+
+            // Set the updatedAt timestamp
+            user.UpdatedAt = DateTime.UtcNow;
+
+            // Update the user entity in the database
+            var updatedUser = await _userRepository.UpdateAsync(user);
+
+            return _mapper.Map<UserForResultDto>(updatedUser);
         }
-
         public async Task<UserForResultDto> ModifyAttachAreaAsync(long id, int attachAreaId)
         {
             var user = await _userRepository.SelectAll()
@@ -94,8 +109,16 @@ namespace LocationTracker.Service.Services.Users
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
 
+            var attachArea = await _attachedAreaRepository.SelectAll()
+                .Where(u => u.Id == attachAreaId)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
             if (user is null)
                 throw new LocationTrackerException(409, "User not found.");
+            if (attachArea is null)
+                throw new LocationTrackerException(409, "AttachArea not found.");
+
 
             user.AttachedAreaId = attachAreaId;
             user.UpdatedAt = DateTime.UtcNow;
@@ -105,7 +128,7 @@ namespace LocationTracker.Service.Services.Users
             return _mapper.Map<UserForResultDto>(updateUser);
         }
 
-        public async Task<UserForResultDto> ModifyRoleAsync(long id, Role roleId)
+        public async Task<bool> ModifyRoleAsync(long id, Role roleId)
         {
             var user = await _userRepository.SelectAll()
                 .Where(u => u.Id == id)
@@ -120,23 +143,29 @@ namespace LocationTracker.Service.Services.Users
 
             var updateUser = await _userRepository.UpdateAsync(user);
 
-            return _mapper.Map<UserForResultDto>(updateUser);
+            var result = _mapper.Map<UserForResultDto>(updateUser);
+            return true;
+
         }
 
         public async Task<bool> RemoveAsync(long id)
         {
-            var user = await _userRepository.SelectAll()
-                .Where(u => u.Id == id)
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
+            var user = await _userRepository.SelectByIdAsync(id);
 
             if (user is null)
                 throw new LocationTrackerException(409, "User not found.");
 
+            if (!string.IsNullOrEmpty(user.ProfileImagePath))
+            {
+                var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", user.ProfileImagePath);
+
+                if (File.Exists(imagePath))
+                    File.Delete(imagePath);
+            }
+
             var isDeleted = await _userRepository.DeleteAsync(id);
             return isDeleted;
         }
-
         public async Task<IEnumerable<UserForResultDto>> RetrieveAllAsync(PaginationParams @params)
         {
             var users = await _userRepository
@@ -170,9 +199,7 @@ namespace LocationTracker.Service.Services.Users
             var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
             using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
                 await file.CopyToAsync(fileStream);
-            }
 
             return filePath;
         }
@@ -189,8 +216,16 @@ namespace LocationTracker.Service.Services.Users
             if (user is null)
                 throw new LocationTrackerException(400, "User not found");
 
+            if (!string.IsNullOrEmpty(user.ProfileImagePath))
+            {
+                var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", user.ProfileImagePath);
+                if (File.Exists(oldImagePath))
+                    File.Delete(oldImagePath);
+            }
+
             var imagePath = await SaveFileAsync(photoPath);
             user.ProfileImagePath = imagePath;
+            user.UpdatedAt = DateTime.UtcNow;
 
             await _userRepository.UpdateAsync(user);
             return true;

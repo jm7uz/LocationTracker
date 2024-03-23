@@ -13,7 +13,7 @@ public interface IUserService
     Task<UserForResultDto> ModifyAsync(long id, UserForUpdateDto dto);
     Task<IEnumerable<UserForResultDto>> RetrieveAllAsync(PaginationParams @params);
     Task<UserForResultDto> ModifyAttachAreaAsync(long id, int AttachAreaModifyId);
-    Task<UserForResultDto> ModifyRoleAsync(long id, Role role);
+    Task<bool> ModifyRoleAsync(long id, Role role);
     Task<bool> ChangePasswordAsync(long id, UserForChangePasswordDto password);
     Task<bool> UploadPhotoAsync(long id, IFormFile photoPath);
 

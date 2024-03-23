@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LocationTracker.Data.Migrations
 {
     [DbContext(typeof(LocationTrackerDbContext))]
-    [Migration("20240313084458_Firstmigration")]
-    partial class Firstmigration
+    [Migration("20240322211222_Usersmodifymigratiaon")]
+    partial class Usersmodifymigratiaon
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -213,10 +213,9 @@ namespace LocationTracker.Data.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("AttachedAreaId")
+                    b.Property<int?>("AttachedAreaId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
@@ -230,37 +229,27 @@ namespace LocationTracker.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("MiddleName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("ProfileImagePath")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("Role")
                         .HasColumnType("integer");
 
-                    b.Property<short>("RoleId")
-                        .HasColumnType("smallint");
+                    b.Property<string>("Salt")
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AttachedAreaId");
 
                     b.ToTable("Users");
                 });
@@ -296,17 +285,6 @@ namespace LocationTracker.Data.Migrations
                 });
 
             modelBuilder.Entity("LocationTracker.Domain.Entities.Locations.PointLocation", b =>
-                {
-                    b.HasOne("LocationTracker.Domain.Entities.Locations.AttachedArea", "AttachedArea")
-                        .WithMany()
-                        .HasForeignKey("AttachedAreaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AttachedArea");
-                });
-
-            modelBuilder.Entity("LocationTracker.Domain.Entities.Users.User", b =>
                 {
                     b.HasOne("LocationTracker.Domain.Entities.Locations.AttachedArea", "AttachedArea")
                         .WithMany()
