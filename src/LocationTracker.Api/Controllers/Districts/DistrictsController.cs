@@ -16,11 +16,11 @@ public class DistrictsController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddChannelAsync([FromBody] DistrictForCreationDto dto) =>
+    public async Task<IActionResult> AddAsync([FromBody] DistrictForCreationDto dto) =>
         Ok(await _service.AddAsync(dto));
 
     [HttpGet]
-    public async Task<IActionResult> GetAllChannelAsync([FromQuery] PaginationParams @params) =>
+    public async Task<IActionResult> GetAllAsync([FromQuery] PaginationParams @params) =>
         Ok(await _service.RetrieveAllAsync(@params));
 
     [HttpGet("{id}")]
@@ -28,10 +28,10 @@ public class DistrictsController : BaseController
         Ok(await _service.RetrieveByIdAsync(id));
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteChannelAsync([FromRoute(Name = "id")] int id) =>
+    public async Task<IActionResult> DeleteAsync([FromRoute(Name = "id")] int id) =>
         Ok(await _service.RemoveAsync(id));
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateChannelAsync([FromRoute(Name = "id")] int id, [FromBody] DistrictForUpdateDto dto) =>
+    public async Task<IActionResult> UpdateAsync([FromRoute(Name = "id")] int id, [FromBody] DistrictForUpdateDto dto) =>
         Ok(await _service.ModifyAsync(id, dto));
 }

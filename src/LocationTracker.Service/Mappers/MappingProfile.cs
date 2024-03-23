@@ -8,6 +8,8 @@ using LocationTracker.Domain.Entities.Regions;
 using LocationTracker.Service.DTOs.Districts;
 using LocationTracker.Service.DTOs.Regions;
 using LocationTracker.Service.DTOs.Locations.LocationReports;
+using LocationTracker.Service.DTOs.Locations.UserLocations;
+using LocationTracker.Service.DTOs.Locations.PointLocations;
 
 namespace LocationTracker.Service.Mappers;
 
@@ -16,29 +18,39 @@ public class MappingProfile : Profile
     
     public MappingProfile()
     {
-        //User
+        // User
         CreateMap<User, UserForResultDto>().ReverseMap();
         CreateMap<User, UserForCreationDto>().ReverseMap();
         CreateMap<User, UserForUpdateDto>().ReverseMap();
 
-        //AttachedArea
+        // AttachedArea
         CreateMap<AttachedArea, AttachedAreaForCreationDto>().ReverseMap();
         CreateMap<AttachedArea, AttachedAreaForResultDto>().ReverseMap();
         CreateMap<AttachedArea, AttachedAreaForUpdateDto>().ReverseMap();
 
-        // LocationReport
+        // Location Report
         CreateMap<locationReport, LocationReportForCreationDto>().ReverseMap();
         CreateMap<locationReport, LocationReportForUpdateDto>().ReverseMap();
         CreateMap<locationReport, LocationReportForResultDto>().ReverseMap();
-        //Regions
+        // Regions
         CreateMap<Region, RegionForCreationDto>().ReverseMap();
         CreateMap<Region, RegionForUpdateDto>().ReverseMap();
         CreateMap<Region, RegionForResultDto>().ReverseMap();
 
-        //Districts
+        // Districts
         CreateMap<District, DistrictForCreationDto>().ReverseMap();
         CreateMap<District, DistrictForUpdateDto>().ReverseMap();
         CreateMap<District, DistrictForResultDto>().ReverseMap();
+
+        // User Location
+        CreateMap<UserLocation, UserLocationForCreationDto>().ReverseMap();
+        CreateMap<UserLocation, UserLocationForResultDto>().ReverseMap();
+        CreateMap<UserLocation, UserLocationForUpdateDto>().ReverseMap();
+
+        // Point Location
+        CreateMap<PointLocation, PointLocationForCreationDto>().ReverseMap();
+        CreateMap<PointLocation, PointLocationForUpdateDto>().ReverseMap();
+        CreateMap<PointLocation, PointLocationForResultDto>().ReverseMap();
     }
 
 }
