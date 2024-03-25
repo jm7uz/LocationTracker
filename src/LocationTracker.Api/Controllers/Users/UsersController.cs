@@ -54,6 +54,9 @@ namespace LocationTracker.Api.Controllers.Users
         public async Task<IActionResult> UploadPictureAsync(long id, IFormFile file)
             => Ok(await _userService.UploadPhotoAsync(id, file));
 
-        
+
+        [HttpGet("users")]
+        public async Task<IActionResult> SearchUser(string smthing)
+            => Ok(await _userService.SearchForUser(smthing));
     }
 }

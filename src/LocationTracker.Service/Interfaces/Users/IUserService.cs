@@ -16,5 +16,5 @@ public interface IUserService
     Task<UserForResultDto> ModifyRoleAsync(long id, Role role);
     Task<bool> ChangePasswordAsync(long id, UserForChangePasswordDto password);
     Task<bool> UploadPhotoAsync(long id, IFormFile photoPath);
-
+    Task<IEnumerable<UserForResultDto>> SearchForUser(string smthing);
 }

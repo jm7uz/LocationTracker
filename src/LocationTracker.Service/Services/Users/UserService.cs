@@ -195,5 +195,23 @@ namespace LocationTracker.Service.Services.Users
             await _userRepository.UpdateAsync(user);
             return true;
         }
+
+        public async Task<IEnumerable<UserForResultDto>> SearchForUser(string smthing)
+        {
+            if (int.TryParse(smthing, out int userId)) // Check if input is integer
+            {
+                var users = _userRepository.SelectAll().Where(u => u.Id.ToString().StartsWith(smthing)).ToList();
+
+                return _mapper.Map<IEnumerable<UserForResultDto>>(users);
+            }
+            else // If input is not an integer, assume it's a name
+            {
+                var users = _userRepository.SelectAll().Where(u => u.FirstName.StartsWith(smthing)).ToList();
+
+                return _mapper.Map<IEnumerable<UserForResultDto>>(users);
+            }
+
+            throw new LocationTrackerException(404, "Any User is not found with this info");
+        }
     }
 }
